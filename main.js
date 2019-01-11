@@ -85,7 +85,11 @@ function printResults (results, target)
         leftDiv.classList.add("col-5");
         rightDiv.classList.add("col-7");
 
-        starIcon.classList.add("far");
+        if (target === "output") {
+            starIcon.classList.add("far");
+        } else {
+            starIcon.classList.add("fas");
+        }
         starIcon.classList.add("fa-star");
         starIcon.addEventListener("click", function () { toggleFavorite (starIcon, res); });
 
