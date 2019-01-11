@@ -44,7 +44,7 @@ function doQuery ()
 
     let results = lookup(query);
 
-    printResults(results);
+    printResults(results, "output");
     // document.getElementById("output").innerText = results;
 }
 
@@ -65,7 +65,7 @@ function decodeHTML (html)
     return txt.value;
 }
 
-function printResults (results)
+function printResults (results, target)
 { 
     // print each result in a div
     for (let i = 0, len = results.length; i < len; i++) 
@@ -86,7 +86,7 @@ function printResults (results)
 
         starIcon.classList.add("far");
         starIcon.classList.add("fa-star");
-        starIcon.onclick = function () { favorite (starIcon, res); };
+        starIcon.addEventListener("click", function () { toggleFavorite (starIcon, res); });
 
         // render star based on if element is in favorite list
         leftText.innerHTML = decodeHTML(res.title); 
@@ -98,39 +98,48 @@ function printResults (results)
         container.appendChild(leftDiv);
         container.appendChild(rightDiv);
 
-        document.getElementById("output").appendChild(container);
+        document.getElementById(target).appendChild(container);
     }
 }
 
 // favorite the element
 let favorites = [];
-function favorite (icon, res)
+function toggleFavorite (icon, res)
 {
-    // add to favorites list, fill color
-    favorites.push(res);
-    icon.classList.remove("far");
-    icon.classList.add("fas");
+    if (!favorites.includes(res)) 
+    {
+        // add to favorites list, fill color
+        favorites.push(res);
+        icon.classList.remove("far");
+        icon.classList.add("fas");
+    } 
+    else
+    {
+        // remove from favorites array, remove fill
+        favorites.splice(favorites.indexOf(res), 1);
+        icon.classList.remove("fas");
+        icon.classList.add("far");
+    }
 
-    icon.onclick = function () { unfavorite(icon, res); };
-
-    updateFavoritesDisplay();
+    updateFavoritesDisplay(icon);
 }
 
-function unfavorite (icon, res)
+function updateFavoritesDisplay (icon)
 {
-    // remove from favorites array, remove fill
-    favorites.splice(favorites.indexOf(res), 1);
-    icon.classList.remove("fas");
-    icon.classList.add("far");
+    // <h4 class="d-none" id="favHeader">Favourites</h4>
+    let favHeader = document.createElement("h4");
+    favHeader.innerText = "Favourites";
+    let favDiv = document.getElementById("favorites");
 
-    icon.onclick = function () { favorite(icon, res); };
+    favDiv.innerHTML = "";
 
-    updateFavoritesDisplay();
-}
+    if (favorites.length !== 0)
+    {
+        // add favorites header
+        favDiv.appendChild(favHeader);
+    } 
 
-function updateFavoritesDisplay ()
-{
-
+    printResults(favorites, "favorites");
 }
 
 // listen for cleared searchbar
