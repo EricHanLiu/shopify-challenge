@@ -53,6 +53,7 @@ $("#searchButton").click(doQuery);
 // listen for enter keypress
 $("#searchBar").on('keyup', function (e) {
     if (e.keyCode == 13) {
+        document.getElementById("output").innerText = "";
         doQuery();
     }
 });
